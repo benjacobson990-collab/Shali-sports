@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShaliSports — Bet The League</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#080810; --surface:#10101c; --card:#16162a; --border:#252540;
+    --gold:#f0b429; --gold2:#c9930a; --green:#00d68f; --red:#ff4757;
+    --blue:#3d9cff; --text:#eeeef8; --muted:#6060a0; --accent:#6c3fff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:radial-gradient(ellipse 70% 50% at 85% 5%,rgba(108,63,255,.07) 0%,transparent 65%),
+               radial-gradient(ellipse 40% 30% at 5% 90%,rgba(240,180,41,.05) 0%,transparent 55%);}
+
+/* ── HEADER ── */
+header{position:sticky;top:0;z-index:200;background:rgba(8,8,16,.96);backdrop-filter:blur(20px);
+border-bottom:1px solid var(–border);padding:0 1.5rem;height:60px;
+display:flex;align-items:center;justify-content:space-between;}
+.logo{font-family:‘Bebas Neue’;font-size:1.9rem;letter-spacing:3px;color:var(–gold);text-shadow:0 0 24px rgba(240,180,41,.35);}
+.logo span{color:var(–text);}
+.hdr-right{display:flex;align-items:center;gap:10px;}
+.wallet-chip{font-family:‘Space Mono’;font-size:.85rem;color:var(–green);background:rgba(0,214,143,.08);border:1px solid rgba(0,214,143,.2);padding:5px 12px;border-radius:20px;}
+.user-pill{display:flex;align-items:center;gap:8px;background:var(–surface);border:1px solid var(–border);border-radius:20px;padding:4px 14px 4px 6px;cursor:pointer;}
+.user-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(–accent),var(–blue));display:flex;align-items:center;justify-content:center;font-family:‘Bebas Neue’;font-size:.85rem;color:#fff;flex-shrink:0;}
+.user-name{font-size:.8rem;font-weight:600;}
+.logout-btn{font-family:‘Space Mono’;font-size:.6rem;color:var(–muted);background:none;border:1px solid var(–border);border-radius:4px;padding:3px 7px;cursor:pointer;transition:all .15s;}
+.logout-btn:hover{color:var(–red);border-color:var(–red);}
+
+/* ── NAV ── */
+nav{display:flex;overflow-x:auto;scrollbar-width:none;border-bottom:1px solid var(–border);background:var(–surface);padding:0 1.5rem;}
+nav::-webkit-scrollbar{display:none;}
+.nav-tab{padding:13px 18px;font-family:‘Space Mono’;font-size:.68rem;text-transform:uppercase;letter-spacing:1px;color:var(–muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;}
+.nav-tab:hover{color:var(–text);}
+.nav-tab.active{color:var(–gold);border-bottom-color:var(–gold);}
+
+/* ── LAYOUT ── */
+main{position:relative;z-index:1;max-width:1440px;margin:0 auto;padding:1.5rem;display:grid;grid-template-columns:1fr 360px;gap:1.5rem;}
+@media(max-width:960px){main{grid-template-columns:1fr;}}
+.panel{display:none;} .panel.active{display:block;}
+.section-title{font-family:‘Bebas Neue’;font-size:1.5rem;letter-spacing:2px;margin-bottom:1rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.tag{font-family:‘Space Mono’;font-size:.6rem;background:var(–gold);color:#000;padding:2px 7px;border-radius:3px;letter-spacing:1px;}
+.tag.blue{background:var(–blue);color:#fff;} .tag.purple{background:var(–accent);color:#fff;}
+
+/* ── GAME CARD ── */
+.game-card{background:var(–card);border:1px solid var(–border);border-radius:12px;padding:1.1rem;margin-bottom:.9rem;transition:border-color .2s;}
+.game-card:hover{border-color:rgba(108,63,255,.4);}
+.game-meta{font-family:‘Space Mono’;font-size:.6rem;color:var(–muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.8rem;display:flex;justify-content:space-between;}
+.game-round-lbl{color:var(–gold);}
+.teams-row{display:grid;grid-template-columns:1fr 44px 1fr;align-items:center;gap:.75rem;margin-bottom:.9rem;}
+.team-name{font-family:‘Bebas Neue’;font-size:1.1rem;letter-spacing:1px;line-height:1.2;}
+.team-name.right{text-align:right;}
+.team-sub{font-size:.68rem;color:var(–muted);margin-top:1px;}
+.team-sub.right{text-align:right;}
+.vs-circle{width:44px;height:44px;border-radius:50%;background:var(–surface);border:1px solid var(–border);display:flex;align-items:center;justify-content:center;font-family:‘Bebas Neue’;font-size:.9rem;color:var(–muted);flex-shrink:0;}
+.bet-headers{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:3px;}
+.col-header{font-family:‘Space Mono’;font-size:.56rem;color:var(–muted);text-transform:uppercase;letter-spacing:.5px;text-align:center;padding-bottom:2px;}
+.bet-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:5px;}
+.bet-cell{background:var(–surface);border:1px solid var(–border);border-radius:7px;padding:8px 5px;cursor:pointer;text-align:center;transition:all .15s;user-select:none;}
+.bet-cell:hover{border-color:var(–gold);background:rgba(240,180,41,.06);}
+.bet-cell.selected{border-color:var(–gold);background:rgba(240,180,41,.13);}
+.bc-label{font-size:.58rem;color:var(–muted);font-family:‘Space Mono’;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bc-line{font-size:.76rem;font-weight:600;color:var(–text);margin:1px 0;}
+.bc-odds{font-family:‘Space Mono’;font-size:.8rem;color:var(–gold);}
+.bc-odds.fav{color:var(–red);} .bc-odds.dog{color:var(–green);}
+
+/* ── PROP CARD ── */
+.prop-card{background:var(–card);border:1px solid var(–border);border-radius:12px;padding:1.1rem;margin-bottom:.9rem;}
+.prop-header{display:flex;align-items:center;gap:10px;margin-bottom:.9rem;}
+.player-av{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:‘Bebas Neue’;font-size:1rem;color:#fff;background:linear-gradient(135deg,var(–accent),var(–blue));}
+.player-av.star{background:linear-gradient(135deg,#c9930a,#f0b429);}
+.player-av.second{background:linear-gradient(135deg,#4a4a7a,#6c3fff);}
+.player-name-big{font-weight:600;font-size:.92rem;}
+.player-sub{font-size:.7rem;color:var(–muted);margin-top:2px;}
+.star-badge{display:inline-block;font-size:.55rem;font-family:‘Space Mono’;padding:1px 5px;border-radius:3px;margin-left:6px;vertical-align:middle;}
+.sb-star{background:rgba(240,180,41,.15);color:var(–gold);border:1px solid rgba(240,180,41,.3);}
+.sb-second{background:rgba(108,63,255,.12);color:var(–accent);border:1px solid rgba(108,63,255,.25);}
+.prop-row{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;}
+.over-cell,.under-cell{border-radius:8px;padding:9px 6px;border:1px solid var(–border);cursor:pointer;text-align:center;transition:all .15s;background:var(–surface);}
+.over-cell:hover,.over-cell.selected{border-color:var(–green);background:rgba(0,214,143,.08);}
+.under-cell:hover,.under-cell.selected{border-color:var(–red);background:rgba(255,71,87,.08);}
+.dir-label{font-size:.65rem;font-weight:700;font-family:‘Space Mono’;letter-spacing:1px;}
+.over-cell .dir-label{color:var(–green);} .under-cell .dir-label{color:var(–red);}
+.dir-odds{font-family:‘Space Mono’;font-size:.78rem;color:var(–gold);margin-top:3px;}
+.line-center{text-align:center;}
+.line-val{font-family:‘Bebas Neue’;font-size:1.5rem;color:var(–text);}
+.line-stat{font-family:‘Space Mono’;font-size:.55rem;color:var(–muted);text-transform:uppercase;}
+
+/* ── BET SLIP ── */
+.slip-wrap{position:sticky;top:76px;}
+.bet-slip{background:var(–card);border:1px solid var(–border);border-radius:14px;overflow:hidden;}
+.slip-head{background:var(–gold);color:#000;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;}
+.slip-title{font-family:‘Bebas Neue’;font-size:1.25rem;letter-spacing:2px;}
+.slip-cnt{background:#000;color:var(–gold);font-family:‘Space Mono’;font-size:.7rem;padding:2px 8px;border-radius:20px;}
+.slip-body{padding:1rem;}
+.slip-empty{text-align:center;padding:1.8rem 1rem;color:var(–muted);font-size:.82rem;line-height:1.6;}
+.slip-item{background:var(–surface);border:1px solid var(–border);border-radius:8px;padding:9px 11px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:flex-start;}
+.si-name{font-size:.78rem;font-weight:500;max-width:200px;line-height:1.3;}
+.si-odds{font-family:‘Space Mono’;font-size:.78rem;color:var(–gold);margin-top:2px;}
+.si-rm{cursor:pointer;color:var(–muted);padding-left:8px;font-size:.9rem;}
+.si-rm:hover{color:var(–red);}
+.parlay-box{background:rgba(108,63,255,.1);border:1px solid rgba(108,63,255,.3);border-radius:8px;padding:9px 12px;margin:8px 0;display:flex;justify-content:space-between;align-items:center;font-family:‘Space Mono’;font-size:.72rem;}
+.parlay-mult{color:var(–accent);font-size:.95rem;font-weight:700;}
+.wager-sec{margin-top:10px;}
+.w-label{font-family:‘Space Mono’;font-size:.62rem;text-transform:uppercase;letter-spacing:1px;color:var(–muted);margin-bottom:6px;}
+.quick-row{display:flex;gap:4px;margin-bottom:7px;}
+.q-btn{flex:1;background:var(–surface);border:1px solid var(–border);border-radius:5px;padding:5px 3px;font-family:‘Space Mono’;font-size:.65rem;color:var(–muted);cursor:pointer;text-align:center;transition:all .15s;}
+.q-btn:hover{border-color:var(–gold);color:var(–gold);}
+.w-input{width:100%;background:var(–surface);border:1px solid var(–border);border-radius:8px;padding:9px 12px;color:var(–text);font-family:‘Space Mono’;font-size:.95rem;outline:none;transition:border-color .2s;}
+.w-input:focus{border-color:var(–gold);}
+.payout-row{display:flex;justify-content:space-between;padding:9px 0;border-top:1px solid var(–border);margin-top:7px;font-size:.82rem;}
+.payout-val{font-family:‘Space Mono’;color:var(–green);font-weight:700;font-size:.78rem;}
+.place-btn{width:100%;background:var(–gold);color:#000;border:none;border-radius:9px;padding:12px;font-family:‘Bebas Neue’;font-size:1.1rem;letter-spacing:2px;cursor:pointer;transition:all .2s;margin-top:8px;}
+.place-btn:hover{background:var(–gold2);transform:translateY(-1px);box-shadow:0 4px 20px rgba(240,180,41,.25);}
+
+/* ── BET SLIP ACTION BUTTONS ── */
+.slip-action-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+.slip-action-btn{background:var(–surface);border:2px solid var(–border);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s;color:var(–text);}
+.slip-action-btn:hover{border-color:rgba(255,255,255,.2);}
+.slip-action-btn.active.btn-house{border-color:var(–gold);background:rgba(240,180,41,.1);}
+.slip-action-btn.active.btn-friend{border-color:var(–accent);background:rgba(108,63,255,.13);}
+.sab-icon{font-size:1.4rem;margin-bottom:3px;}
+.sab-label{font-family:‘Bebas Neue’;font-size:1rem;letter-spacing:1.5px;}
+.sab-sub{font-size:.58rem;color:var(–muted);font-family:‘Space Mono’;margin-top:1px;}
+.friend-selector{display:none;margin-top:8px;padding:10px 12px;background:rgba(108,63,255,.07);border:1px solid rgba(108,63,255,.2);border-radius:8px;}
+.friend-selector.show{display:block;}
+.confirm-btn{width:100%;border:none;border-radius:9px;padding:13px;font-family:‘Bebas Neue’;font-size:1.15rem;letter-spacing:2px;cursor:pointer;transition:all .2s;margin-top:8px;background:var(–gold);color:#000;}
+.confirm-btn.mode-friend{background:var(–accent);color:#fff;}
+.confirm-btn:hover{opacity:.9;transform:translateY(-1px);}
+.cf-mini-label{font-family:‘Space Mono’;font-size:.6rem;text-transform:uppercase;letter-spacing:1px;color:var(–muted);margin-bottom:5px;}
+.cf-mini-select{width:100%;background:var(–surface);border:1px solid var(–border);border-radius:7px;padding:8px 11px;color:var(–text);font-family:‘DM Sans’;font-size:.85rem;outline:none;transition:border-color .2s;cursor:pointer;}
+.cf-mini-select:focus{border-color:var(–accent);}
+.cf-mini-select option{background:var(–surface);}
+
+/* ── FRIEND BETS TAB ── */
+.ch-badge{display:inline-block;background:var(–red);color:#fff;border-radius:10px;font-size:.55rem;font-family:‘Space Mono’;padding:1px 5px;margin-left:5px;vertical-align:middle;line-height:1.4;}
+.challenge-card{background:var(–card);border:1px solid var(–border);border-radius:12px;padding:1.1rem;margin-bottom:.9rem;}
+.ch-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.ch-from{font-size:.75rem;color:var(–muted);font-family:‘Space Mono’;}
+.ch-from strong{color:var(–blue);}
+.ch-status{font-family:‘Space Mono’;font-size:.58rem;text-transform:uppercase;letter-spacing:.5px;padding:2px 7px;border-radius:3px;}
+.ch-open{background:rgba(0,214,143,.12);color:var(–green);border:1px solid rgba(0,214,143,.3);}
+.ch-pending{background:rgba(61,156,255,.1);color:var(–blue);border:1px solid rgba(61,156,255,.25);}
+.ch-declined{background:rgba(96,96,160,.12);color:var(–muted);border:1px solid var(–border);}
+.ch-pick{font-weight:600;font-size:.88rem;margin:5px 0 3px;}
+.ch-counter{font-size:.8rem;color:var(–muted);}
+.ch-amount{font-family:‘Space Mono’;font-size:.85rem;color:var(–green);margin-top:7px;}
+.ch-actions{display:flex;gap:6px;margin-top:10px;}
+.btn-accept{flex:1;background:rgba(0,214,143,.15);border:1px solid rgba(0,214,143,.4);border-radius:7px;padding:8px;font-size:.78rem;font-weight:700;color:var(–green);cursor:pointer;transition:all .15s;text-align:center;}
+.btn-accept:hover{background:rgba(0,214,143,.25);}
+.btn-decline{background:rgba(255,71,87,.1);border:1px solid rgba(255,71,87,.3);border-radius:7px;padding:8px 12px;font-size:.78rem;color:var(–red);cursor:pointer;transition:all .15s;}
+.btn-decline:hover{background:rgba(255,71,87,.2);}
+
+/* ── STANDINGS / SCHEDULE / ROSTER ── */
+.standings-table{width:100%;border-collapse:collapse;}
+.standings-table th{font-family:‘Space Mono’;font-size:.6rem;text-transform:uppercase;color:var(–muted);padding:9px 12px;text-align:left;border-bottom:1px solid var(–border);letter-spacing:1px;}
+.standings-table td{padding:11px 12px;font-size:.85rem;border-bottom:1px solid rgba(37,37,64,.6);}
+.standings-table tr:hover td{background:rgba(255,255,255,.015);}
+.my-bet-card{background:var(–card);border:1px solid var(–border);border-radius:12px;padding:1.1rem;margin-bottom:.9rem;}
+.bs-badge{display:inline-block;font-family:‘Space Mono’;font-size:.6rem;text-transform:uppercase;padding:3px 7px;border-radius:3px;margin-bottom:7px;}
+.bs-pending{background:rgba(61,156,255,.1);color:var(–blue);border:1px solid rgba(61,156,255,.25);}
+.bs-won{background:rgba(0,214,143,.1);color:var(–green);border:1px solid rgba(0,214,143,.25);}
+.bs-lost{background:rgba(255,71,87,.1);color:var(–red);border:1px solid rgba(255,71,87,.25);}
+.bs-challenge{background:rgba(108,63,255,.1);color:var(–accent);border:1px solid rgba(108,63,255,.25);}
+.bet-leg-row{padding:4px 0;border-bottom:1px solid rgba(37,37,64,.5);font-size:.8rem;}
+.bet-leg-row:last-child{border:none;}
+.bet-footer{display:flex;justify-content:space-between;margin-top:9px;font-size:.82rem;}
+.sched-round{margin-bottom:1.4rem;}
+.round-bar{font-family:‘Bebas Neue’;font-size:1rem;letter-spacing:2px;color:var(–gold);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.round-bar::after{content:’’;flex:1;height:1px;background:var(–border);}
+.sched-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+@media(max-width:600px){.sched-grid{grid-template-columns:1fr;}}
+.sched-game{background:var(–card);border:1px solid var(–border);border-radius:8px;padding:9px 13px;font-size:.8rem;}
+.roster-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;}
+.rc{background:var(–card);border:1px solid var(–border);border-radius:12px;overflow:hidden;}
+.rc-head{padding:13px 15px;border-bottom:1px solid var(–border);}
+.rc-name{font-family:‘Bebas Neue’;font-size:1.1rem;letter-spacing:1px;}
+.rc-coach{font-size:.68rem;color:var(–muted);margin-top:2px;}
+.rc-body{padding:10px 15px;}
+.pr-row{display:flex;align-items:center;gap:9px;padding:5px 0;border-bottom:1px solid rgba(37,37,64,.4);}
+.pr-row:last-child{border:none;}
+.pr-num{width:22px;height:22px;border-radius:50%;background:var(–surface);border:1px solid var(–border);display:flex;align-items:center;justify-content:center;font-family:‘Space Mono’;font-size:.58rem;color:var(–muted);flex-shrink:0;}
+.round-nav{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:1rem;}
+.rn-btn{font-family:‘Space Mono’;font-size:.65rem;padding:5px 12px;border-radius:5px;cursor:pointer;border:1px solid var(–border);background:var(–surface);color:var(–muted);transition:all .15s;}
+.rn-btn.active{background:var(–gold);border-color:var(–gold);color:#000;font-weight:700;}
+.sub-section{font-family:‘Bebas Neue’;font-size:1.1rem;letter-spacing:1.5px;color:var(–text);margin:1.2rem 0 .7rem;display:flex;align-items:center;gap:8px;}
+.sub-section::after{content:’’;flex:1;height:1px;background:var(–border);}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;padding:12px 18px;border-radius:10px;font-weight:700;font-size:.85rem;background:var(–green);color:#000;transform:translateY(80px);opacity:0;transition:all .3s;box-shadow:0 6px 24px rgba(0,214,143,.25);}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.err{background:var(–red);color:#fff;box-shadow:0 6px 24px rgba(255,71,87,.25);}
+
+/* ── AUTH MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.modal{background:var(–card);border:1px solid var(–border);border-radius:16px;padding:2rem;width:360px;max-width:100%;}
+.modal-title{font-family:‘Bebas Neue’;font-size:2rem;letter-spacing:2px;color:var(–gold);margin-bottom:4px;}
+.modal-sub{font-size:.82rem;color:var(–muted);margin-bottom:1.4rem;line-height:1.5;}
+.modal-label{font-family:‘Space Mono’;font-size:.6rem;text-transform:uppercase;letter-spacing:1px;color:var(–muted);margin-bottom:5px;display:block;}
+.modal-input{width:100%;background:var(–surface);border:1px solid var(–border);border-radius:8px;padding:9px 12px;color:var(–text);font-family:‘DM Sans’;font-size:.9rem;outline:none;transition:border-color .2s;margin-bottom:12px;}
+.modal-input:focus{border-color:var(–gold);}
+.modal-err{color:var(–red);font-size:.75rem;margin-bottom:10px;display:none;font-family:‘Space Mono’;}
+.modal-btn{width:100%;background:var(–gold);color:#000;border:none;border-radius:9px;padding:12px;font-family:‘Bebas Neue’;font-size:1.1rem;letter-spacing:2px;cursor:pointer;transition:all .2s;}
+.modal-btn:hover{background:var(–gold2);}
+.modal-switch{text-align:center;margin-top:12px;font-size:.78rem;color:var(–muted);}
+.modal-switch a{color:var(–blue);cursor:pointer;}
+.modal-switch a:hover{text-decoration:underline;}
+</style>
+
+</head>
+<body>
+
+<!-- AUTH MODAL -->
+
+<div class="modal-bg" id="authModal">
+  <div class="modal">
+    <div class="modal-title">ShaliSports</div>
+
+```
+<!-- SIGN IN -->
+<div id="view-signin">
+  <div class="modal-sub">Sign in to place bets and challenge friends.</div>
+  <label class="modal-label">Email</label>
+  <input class="modal-input" type="email" id="si-email" placeholder="you@example.com">
+  <label class="modal-label">Password</label>
+  <input class="modal-input" type="password" id="si-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()">
+  <div class="modal-err" id="si-err"></div>
+  <button class="modal-btn" id="si-btn" onclick="doSignIn()">Sign In →</button>
+  <div class="modal-switch">No account? <a onclick="showAuthView('signup')">Create one</a></div>
+</div>
+
+<!-- SIGN UP -->
+<div id="view-signup" style="display:none">
+  <div class="modal-sub">Create a free account to start betting.</div>
+  <label class="modal-label">Display Name</label>
+  <input class="modal-input" type="text" id="su-name" placeholder="e.g. Zach S." maxlength="30">
+  <label class="modal-label">Email</label>
+  <input class="modal-input" type="email" id="su-email" placeholder="you@example.com">
+  <label class="modal-label">Password (6+ chars)</label>
+  <input class="modal-input" type="password" id="su-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignUp()">
+  <div class="modal-err" id="su-err"></div>
+  <button class="modal-btn" id="su-btn" onclick="doSignUp()">Create Account →</button>
+  <div class="modal-switch">Already have one? <a onclick="showAuthView('signin')">Sign in</a></div>
+</div>
+```
+
+  </div>
+</div>
+
+<header>
+  <div class="logo">Shali<span>Sports</span></div>
+  <div class="hdr-right">
+    <div class="wallet-chip" id="walletDisp">1,000 coins</div>
+    <div class="user-pill">
+      <div class="user-av" id="userAv">?</div>
+      <span class="user-name" id="userName">...</span>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-tab active" onclick="switchTab('games',this)">🏀 Games</div>
+  <div class="nav-tab" onclick="switchTab('props',this)">📊 Props</div>
+  <div class="nav-tab" onclick="switchTab('friends',this)">⚡ Challenges <span class="ch-badge" id="chBadge" style="display:none"></span></div>
+  <div class="nav-tab" onclick="switchTab('standings',this)">🏆 Standings</div>
+  <div class="nav-tab" onclick="switchTab('schedule',this)">📅 Schedule</div>
+  <div class="nav-tab" onclick="switchTab('rosters',this)">👥 Rosters</div>
+  <div class="nav-tab" onclick="switchTab('mybets',this)">🎟 My Bets</div>
+  <div class="nav-tab" onclick="switchTab('results',this)">📝 Results</div>
+</nav>
+
+<main>
+<div>
+  <div class="panel active" id="panel-games">
+    <div class="section-title">Game Lines <span class="tag">ALL MARKETS</span></div>
+    <div class="round-nav" id="roundNav"></div>
+    <div id="games-container"></div>
+  </div>
+
+  <div class="panel" id="panel-props">
+    <div class="section-title">Player Props <span class="tag blue">INDIVIDUAL</span></div>
+    <div id="props-container"></div>
+  </div>
+
+  <div class="panel" id="panel-friends">
+    <div class="section-title">Friend Bets <span class="tag purple">H2H</span></div>
+    <div id="incoming-ch-wrap">
+      <div class="sub-section">⚡ Incoming Challenges</div>
+      <div id="incoming-ch"></div>
+    </div>
+    <div id="sent-ch-wrap">
+      <div class="sub-section">Sent Challenges</div>
+      <div id="sent-ch"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-standings">
+    <div class="section-title">Standings <span class="tag">2025</span></div>
+    <div class="game-card" style="padding:0;overflow:hidden;">
+      <table class="standings-table">
+        <thead><tr><th>#</th><th>Team</th><th>Coach</th><th>PWR</th><th>W</th><th>L</th><th>PF-PA</th></tr></thead>
+        <tbody id="standings-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-schedule">
+    <div class="section-title">Schedule <span class="tag">7 ROUNDS</span></div>
+    <div id="schedule-container"></div>
+  </div>
+
+  <div class="panel" id="panel-rosters">
+    <div class="section-title">Rosters <span class="tag">8 TEAMS</span></div>
+    <div class="roster-grid" id="roster-container"></div>
+  </div>
+
+  <div class="panel" id="panel-mybets">
+    <div class="section-title">My Bets <span class="tag">HISTORY</span></div>
+    <div id="mybets-container"></div>
+  </div>
+
+  <div class="panel" id="panel-results">
+    <div class="section-title">Results <span class="tag">SUBMIT</span></div>
+    <div id="results-user-section">
+      <p style="font-size:.82rem;color:var(--muted);margin-bottom:1.2rem;line-height:1.6;">
+        Submit game results or player point totals below. All submissions are unofficial until approved by the commissioner.
+      </p>
+      <div class="game-card" style="margin-bottom:1rem;">
+        <div style="font-family:'Bebas Neue';font-size:1rem;letter-spacing:1.5px;margin-bottom:.9rem;">Submit Game Result</div>
+        <div style="margin-bottom:8px;">
+          <label class="modal-label">Round</label>
+          <select class="cf-mini-select" id="res-round" style="width:100%;margin-bottom:8px;" onchange="populateResGames()">
+            <option value="">— Select round —</option>
+          </select>
+        </div>
+        <div style="margin-bottom:8px;">
+          <label class="modal-label">Game</label>
+          <select class="cf-mini-select" id="res-game" style="width:100%;margin-bottom:8px;"></select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+          <div>
+            <label class="modal-label" id="res-t1-label">Team 1 Score</label>
+            <input class="modal-input" type="number" id="res-score1" placeholder="e.g. 17" min="0" style="margin-bottom:0;">
+          </div>
+          <div>
+            <label class="modal-label" id="res-t2-label">Team 2 Score</label>
+            <input class="modal-input" type="number" id="res-score2" placeholder="e.g. 12" min="0" style="margin-bottom:0;">
+          </div>
+        </div>
+        <button class="place-btn" style="background:var(--accent);" onclick="submitGameResult()">Submit Result</button>
+      </div>
+      <div class="game-card">
+        <div style="font-family:'Bebas Neue';font-size:1rem;letter-spacing:1.5px;margin-bottom:.9rem;">Submit Player Points</div>
+        <div style="margin-bottom:8px;">
+          <label class="modal-label">Player</label>
+          <select class="cf-mini-select" id="res-player" style="width:100%;margin-bottom:8px;"></select>
+        </div>
+        <div style="margin-bottom:8px;">
+          <label class="modal-label">Points Scored</label>
+          <input class="modal-input" type="number" id="res-player-pts" placeholder="e.g. 9" min="0" style="margin-bottom:0;">
+        </div>
+        <div style="margin-bottom:8px;">
+          <label class="modal-label">Round</label>
+          <select class="cf-mini-select" id="res-player-round" style="width:100%;margin-bottom:0;"></select>
+        </div>
+        <button class="place-btn" style="background:var(--accent);margin-top:10px;" onclick="submitPlayerPoints()">Submit Points</button>
+      </div>
+      <div class="sub-section" style="margin-top:1.5rem;">Your Submissions</div>
+      <div id="my-submissions"></div>
+    </div>
+
+```
+<!-- ADMIN SECTION — only visible to admins -->
+<div id="results-admin-section" style="display:none;">
+  <div style="background:rgba(240,180,41,.08);border:1px solid rgba(240,180,41,.25);border-radius:10px;padding:12px 15px;margin-bottom:1.2rem;font-size:.8rem;color:var(--gold);font-family:'Space Mono';">
+    ⚡ COMMISSIONER VIEW
+  </div>
+
+  <!-- Pending submissions -->
+  <div style="font-family:'Bebas Neue';font-size:1.1rem;letter-spacing:1.5px;margin-bottom:.7rem;">Pending Submissions</div>
+  <div id="admin-pending" style="margin-bottom:1.5rem;"></div>
+
+  <!-- Power Rankings Editor -->
+  <div style="font-family:'Bebas Neue';font-size:1.1rem;letter-spacing:1.5px;margin-bottom:.7rem;">Power Rankings &amp; Seeds</div>
+  <div class="game-card" style="margin-bottom:1rem;">
+    <p style="font-size:.75rem;color:var(--muted);margin-bottom:.9rem;line-height:1.5;">Drag to reorder, or edit rank numbers directly. Changes update odds live for all users.</p>
+    <div id="power-rank-editor"></div>
+    <button class="place-btn" style="background:var(--accent);margin-top:10px;" onclick="savePowerRankings()">💾 Save Power Rankings</button>
+  </div>
+
+  <!-- Prop Line Overrides -->
+  <div style="font-family:'Bebas Neue';font-size:1.1rem;letter-spacing:1.5px;margin-bottom:.7rem;">Prop Line Overrides</div>
+  <div class="game-card" style="margin-bottom:1rem;">
+    <p style="font-size:.75rem;color:var(--muted);margin-bottom:.9rem;line-height:1.5;">Override the auto-calculated points line for any player. Leave blank to use the default formula.</p>
+    <div id="prop-line-editor"></div>
+    <button class="place-btn" style="background:var(--accent);margin-top:10px;" onclick="savePropOverrides()">💾 Save Line Overrides</button>
+  </div>
+
+  <!-- Admin Accounts -->
+  <div style="font-family:'Bebas Neue';font-size:1.1rem;letter-spacing:1.5px;margin-bottom:.7rem;">Admin Accounts</div>
+  <div class="game-card" style="margin-bottom:1rem;">
+    <p style="font-size:.75rem;color:var(--muted);margin-bottom:.9rem;line-height:1.5;">Add emails that should have commissioner access. They can approve results and edit lines.</p>
+    <div id="admin-list" style="margin-bottom:.8rem;"></div>
+    <div style="display:flex;gap:8px;">
+      <input class="modal-input" type="email" id="new-admin-email" placeholder="email@example.com" style="margin:0;flex:1;">
+      <button class="place-btn" style="background:var(--accent);margin:0;padding:0 14px;" onclick="addAdmin()">Add</button>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- BET SLIP -->
+
+<div>
+  <div class="slip-wrap">
+    <div class="bet-slip">
+      <div class="slip-head">
+        <span class="slip-title">Bet Slip</span>
+        <span class="slip-cnt" id="slip-cnt">0</span>
+      </div>
+      <div class="slip-body">
+        <div id="slip-empty" class="slip-empty">🏀 Click any line to add picks.<br><span style="font-size:.72rem;color:var(--accent);">Bet vs house or challenge a friend — your call.</span></div>
+        <div id="slip-items"></div>
+        <div id="slip-parlay" style="display:none" class="parlay-box">
+          <span>Parlay Multiplier</span>
+          <span class="parlay-mult" id="parlay-mult">1.00x</span>
+        </div>
+        <div id="slip-wager" style="display:none" class="wager-sec">
+          <div class="w-label">Wager</div>
+          <div class="quick-row">
+            <div class="q-btn" onclick="qw(50)">50</div>
+            <div class="q-btn" onclick="qw(100)">100</div>
+            <div class="q-btn" onclick="qw(250)">250</div>
+            <div class="q-btn" onclick="qw(500)">500</div>
+          </div>
+          <input class="w-input" type="number" id="wager-input" placeholder="Enter coins..." oninput="updatePayout()" min="1">
+          <div class="payout-row">
+            <span>To Win</span>
+            <span class="payout-val" id="payout-val">—</span>
+          </div>
+
+```
+      <!-- FRIEND SELECTOR — shown when challenge mode active -->
+      <div class="friend-selector" id="friendSelector">
+        <div class="cf-mini-label">Challenge who?</div>
+        <select class="cf-mini-select" id="cf-mini-select">
+          <option value="">— Select a friend —</option>
+        </select>
+      </div>
+
+      <!-- TWO EQUAL ACTION BUTTONS -->
+      <div class="slip-action-row">
+        <button class="slip-action-btn btn-house" id="btnHouse" onclick="selectMode('house')">
+          <div class="sab-icon">🏦</div>
+          <div class="sab-label">Place Bet</div>
+          <div class="sab-sub">vs House</div>
+        </button>
+        <button class="slip-action-btn btn-friend" id="btnFriend" onclick="selectMode('friend')">
+          <div class="sab-icon">⚡</div>
+          <div class="sab-label">Challenge</div>
+          <div class="sab-sub">vs Friend</div>
+        </button>
+      </div>
+      <button class="confirm-btn" id="confirmBtn" onclick="confirmSlip()">Confirm Bet →</button>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+</div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  LEAGUE DATA
+// ══════════════════════════════════════════════════════
+const TEAMS = [
+  {name:"The SY's",             coach:"Dweck's",     players:["Henry Kaplan","Isaac Messinger","Evan Benelyahu","Eli Javdan"]},
+  {name:"The Masmidim",         coach:"Jacobson",    players:["Martzy Hirsch","Josh Elkus","Daniel Navon","Zach Shechter"]},
+  {name:"The Gushnikim",        coach:"Falk",        players:["Ari Elad","Jonah Hirsch","Leo Katzin","Noam Lerner"]},
+  {name:"The BMT Bachurs",      coach:"Schwarzberg", players:["Max Grytzman","Isaac Bijou","Ethan Zackary","Ariel Mazar"]},
+  {name:"The Golden Plate Warriors",coach:"Weslow",  players:["Benjamin Sztuden","Eytan Bentsvi","Nate Kurzban","Gabe Mittman"]},
+  {name:"The Lahav Learners",   coach:"Stein",       players:["Yosef Isenberg","Jonah Delson","Solly Wintner","Rabbi Stein"]},
+  {name:"The Kabbobs",          coach:"Ravonshenas", players:["Gavin Deutsch","Elisha Fishman","Yuri Steuer","Etan Lerner"]},
+  {name:"The Cholent Champions",coach:"Brakha",      players:["Eli Heller","Jack Berg","Moshe Brodsky","David Dakar"]},
+];
+
+// Power rank — starts with defaults, overridden by Supabase data
+let POWER_RANK = {
+  "The SY's":1, "The BMT Bachurs":2, "The Kabbobs":3, "The Cholent Champions":4,
+  "The Masmidim":5, "The Lahav Learners":6, "The Golden Plate Warriors":7, "The Gushnikim":8,
+};
+
+// Prop line overrides — { playerName: lineValue } — empty = use formula
+let PROP_OVERRIDES = {};
+
+// Admin emails — starts with default, extended via Supabase
+let ADMIN_EMAILS = ['benjacobson990@gmail.com'];
+function isAdmin(email) { return ADMIN_EMAILS.includes(email?.toLowerCase()); }
+
+// Tiers ordered by skill within each tier (index 0 = best in tier)
+const T1_ORDER = ["Henry Kaplan","Yosef Isenberg","Max Grytzman"];
+const T2_ORDER = ["Gavin Deutsch","Eli Heller","Nate Kurzban","David Dakar","Martzy Hirsch"];
+const T3_ORDER = ["Ethan Zackary","Isaac Messinger","Solly Wintner","Josh Elkus","Eytan Bentsvi","Benjamin Sztuden"];
+const T4_ORDER = ["Isaac Bijou","Elisha Fishman","Yuri Steuer","Evan Benelyahu","Jonah Hirsch"];
+
+// Build PLAYER_TIER and PLAYER_RANK (rank within tier, 0=best)
+const PLAYER_TIER = {}, PLAYER_RANK = {};
+[T1_ORDER,T2_ORDER,T3_ORDER,T4_ORDER].forEach((arr,ti)=>{
+  arr.forEach((n,ri)=>{ PLAYER_TIER[n]=ti+1; PLAYER_RANK[n]=ri; });
+});
+TEAMS.flatMap(t=>t.players).forEach(p=>{
+  if(!PLAYER_TIER[p]){ PLAYER_TIER[p]=5; PLAYER_RANK[p]=0; }
+});
+
+const ALL_PLAYERS = TEAMS.flatMap(t => t.players.map(p => ({name:p, team:t.name})));
+
+// Per-team tier counts
+const TEAM_TIER_COUNT = {};
+TEAMS.forEach(t=>{
+  const c={1:0,2:0,3:0,4:0,5:0};
+  t.players.forEach(p=>{ c[PLAYER_TIER[p]??5]++; });
+  TEAM_TIER_COUNT[t.name]=c;
+});
+
+const SCHEDULE = [
+  {round:1,games:[["The SY's","The Masmidim"],["The Lahav Learners","The Cholent Champions"],["The BMT Bachurs","The Golden Plate Warriors"],["The Gushnikim","The Kabbobs"]]},
+  {round:2,games:[["The SY's","The Lahav Learners"],["The Masmidim","The Cholent Champions"],["The BMT Bachurs","The Gushnikim"],["The Golden Plate Warriors","The Kabbobs"]]},
+  {round:3,games:[["The SY's","The Cholent Champions"],["The Masmidim","The Lahav Learners"],["The BMT Bachurs","The Kabbobs"],["The Golden Plate Warriors","The Gushnikim"]]},
+  {round:4,games:[["The SY's","The BMT Bachurs"],["The Masmidim","The Golden Plate Warriors"],["The Lahav Learners","The Gushnikim"],["The Cholent Champions","The Kabbobs"]]},
+  {round:5,games:[["The SY's","The Golden Plate Warriors"],["The Masmidim","The BMT Bachurs"],["The Lahav Learners","The Kabbobs"],["The Cholent Champions","The Gushnikim"]]},
+  {round:6,games:[["The SY's","The Gushnikim"],["The Masmidim","The Kabbobs"],["The Lahav Learners","The BMT Bachurs"],["The Cholent Champions","The Golden Plate Warriors"]]},
+  {round:7,games:[["The SY's","The Kabbobs"],["The Masmidim","The Gushnikim"],["The Lahav Learners","The Golden Plate Warriors"],["The Cholent Champions","The BMT Bachurs"]]},
+];
+
+const ADMIN_EMAIL = 'benjacobson990@gmail.com'; // legacy — isAdmin() is the real check
+
+// ══════════════════════════════════════════════════════
+//  ODDS ENGINE
+// ══════════════════════════════════════════════════════
+const VIG = 0.046;
+function rankToProb(t1, t2) {
+  const gap = (POWER_RANK[t2]??4) - (POWER_RANK[t1]??4);
+  const p = 1 / (1 + Math.exp(-gap * 0.44));
+  return Math.min(0.82, Math.max(0.18, p));
+}
+function toAmerican(p) {
+  return p >= 0.5
+    ? Math.round((-p/(1-p))*100/5)*5
+    : Math.round(((1-p)/p)*100/5)*5;
+}
+function matchupOdds(t1, t2) {
+  const pA = rankToProb(t1, t2), pB = 1 - pA;
+  const mlA = toAmerican(pA + VIG), mlB = toAmerican(pB + VIG);
+  const gap = Math.abs((POWER_RANK[t1]??4) - (POWER_RANK[t2]??4));
+  const spread = -(Math.round(gap * 0.7 * 2) / 2);
+  const total  = Math.round((34 - gap * 1.15) * 2) / 2;
+  return {mlA, mlB, spread, total, spreadOddsA:-110, spreadOddsB:-110, totalOddsO:-110, totalOddsU:-110};
+}
+
+// Points prop line — checks overrides first, then uses formula
+function pointsPropLine(playerName, teamName) {
+  // Commissioner override takes priority
+  if (PROP_OVERRIDES[playerName] !== undefined) return PROP_OVERRIDES[playerName];
+
+  const tier = PLAYER_TIER[playerName] ?? 5;
+  if (tier >= 5) return null;
+
+  const tc = TEAM_TIER_COUNT[teamName] || {1:0,2:0,3:0,4:0,5:0};
+  const t1=tc[1]||0, t2=tc[2]||0, t3=tc[3]||0;
+  const above12  = t1+t2;
+  const above123 = t1+t2+t3;
+
+  if (tier===1) {
+    const otherT1 = t1-1;
+    if (otherT1>=1)  return 8.5;
+    if (t2>=1)       return 9.5;
+    return 10.5;
+  }
+  if (tier===2) {
+    if (t1>=2)       return 5.5;
+    if (t1===1)      return 6.5;
+    return 7.5;
+  }
+  if (tier===3) {
+    if (above12>=2)  return 3.5;
+    if (above12===1) return 4.5;
+    return 5.5;
+  }
+  // tier 4 — floor must stay .5
+  const raw = 3.5 - above123 * 0.5;
+  return Math.max(1.5, raw % 1 === 0 ? raw - 0.5 : raw); // force .5 ending, floor 1.5
+}
+
+// Prop odds: combines within-tier rank AND game matchup context
+// Best in tier + big fav → over heavily favored; worst in tier + big dog → under favored
+// True probability for over: base 0.50, ±0.10 for tier rank, ±0.08 for game context
+function propOdds(playerName, teamName, opponentTeam) {
+  const rank = PLAYER_RANK[playerName] ?? 0;
+  const tier = PLAYER_TIER[playerName] ?? 5;
+  const tierSizes = {1:T1_ORDER.length, 2:T2_ORDER.length, 3:T3_ORDER.length, 4:T4_ORDER.length};
+  const size = tierSizes[tier] || 1;
+
+  // Within-tier rank component: rank 0 (best) → +0.10, last → -0.10
+  const normRank = size > 1 ? 1 - (2 * rank / (size - 1)) : 0;
+  const rankShift = normRank * 0.10;
+
+  // Game context component: big fav → over more likely, big dog → over less likely
+  const myRank  = POWER_RANK[teamName]      ?? 4;
+  const oppRank = POWER_RANK[opponentTeam]  ?? 4;
+  const gap     = Math.abs(myRank - oppRank);
+  const favored = myRank < oppRank;
+  // scale: gap 0→0, gap 1-2→±0.04, gap 3+→±0.08
+  const gameShift = (favored ? 1 : -1) * (gap === 0 ? 0 : gap <= 2 ? 0.04 : 0.08);
+
+  const pOver  = Math.min(0.78, Math.max(0.22, 0.50 + rankShift + gameShift));
+  const vigHalf = VIG / 2;
+  const overOdds  = toAmerican(pOver       + vigHalf);
+  const underOdds = toAmerican((1 - pOver) + vigHalf);
+  return { overOdds, underOdds };
+}
+
+function oddsStr(o) { return o > 0 ? `+${o}` : `${o}`; }
+function oddsToMult(o) { return o > 0 ? 1 + o/100 : 1 + 100/Math.abs(o); }
+function fmtCoins(n) { return Math.round(n).toLocaleString(); }
+
+// ══════════════════════════════════════════════════════
+//  SUPABASE — cross-device persistence
+// ══════════════════════════════════════════════════════
+const SUPA_URL = 'https://oaqpnegecprgtqkghemq.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hcXBuZWdlY3ByZ3Rxa2doZW1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNjI1MDcsImV4cCI6MjA4ODczODUwN30.rxCUik2kXMVmqNaK1lIDTyI_RENv3sX0wWOgLApeTUQ';
+
+async function supa(path, method='GET', body=null) {
+  const opts = {
+    method,
+    headers: {
+      'apikey': SUPA_KEY,
+      'Authorization': 'Bearer ' + SUPA_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'resolution=merge-duplicates'
+    }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  try {
+    const res = await fetch(SUPA_URL + '/rest/v1/' + path, opts);
+    const text = await res.text();
+    const parsed = text ? JSON.parse(text) : null;
+    // Surface Supabase errors so they're visible
+    if (parsed && parsed.code) {
+      console.error('Supabase error:', parsed);
+      return { _error: parsed.message || parsed.code };
+    }
+    return parsed;
+  } catch(e) {
+    console.error('Supabase fetch error:', e);
+    return { _error: e.message };
+  }
+}
+
+// Session is stored locally — only THIS device auto-logs in (by design)
+function loadSession(){ try{return JSON.parse(localStorage.getItem('ss_session')||'null')}catch{return null} }
+function saveSession(s){ localStorage.setItem('ss_session', JSON.stringify(s)); }
+function clearSession(){ localStorage.removeItem('ss_session'); }
+
+function hashPass(s){
+  let h=0;
+  for(let i=0;i<s.length;i++) h=(Math.imul(31,h)+s.charCodeAt(i))|0;
+  return h.toString(36);
+}
+
+// ── DB helpers ──
+async function dbGetAccount(email){
+  const rows = await supa(`accounts?email=eq.${encodeURIComponent(email)}&select=*`);
+  if (!rows || rows._error || !Array.isArray(rows)) return null;
+  return rows[0] || null;
+}
+async function dbSaveAccount(acct){
+  const res = await supa('accounts','POST',acct);
+  return res;
+}
+async function dbUpdateAccount(email,fields){ await supa(`accounts?email=eq.${encodeURIComponent(email)}`,'PATCH',fields); }
+async function dbGetChallenges(){ return await supa('challenges?select=*&order=id.desc') || []; }
+async function dbSaveChallenge(ch){ await supa('challenges','POST',ch); }
+async function dbUpdateChallenge(id,fields){ await supa(`challenges?id=eq.${id}`,'PATCH',fields); }
+async function dbGetSubmissions(){ return await supa('submissions?select=*&order=id.desc') || []; }
+async function dbSaveSubmission(sub){ await supa('submissions','POST',{id:sub.id,data:sub}); }
+async function dbUpdateSubmission(id,data){ await supa(`submissions?id=eq.${id}`,'PATCH',{data}); }
+async function dbGetLeagueState(key){ const r=await supa(`league_state?id=eq.${key}&select=*`); return r&&r[0]?r[0].value:null; }
+async function dbSetLeagueState(key,value){ await supa('league_state','POST',{id:key,value}); }
+async function dbGetGameResults(){ const rows=await supa('game_results?select=*')||[]; const o={}; rows.forEach(r=>{o[r.key]=r.data;}); return o; }
+async function dbSaveGameResult(key,data){ await supa('game_results','POST',{key,data}); }
+async function dbGetAllAccounts(){ return await supa('accounts?select=email,name') || []; }
+
+// ── League config helpers ──
+async function dbGetConfig(key){ return await dbGetLeagueState(key); }
+async function dbSetConfig(key,val){ return await dbSetLeagueState(key,val); }
+
+// ══════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════
+let challenges  = [];
+let submissions = [];
+let gameResults = {};
+let currentUser = null;
+let wallet      = 1000;
+let betSlip     = [];
+let myBets      = [];
+let activeRound = 1;
+let currentRound = 1;
+let challengeMode = false;
+let standings   = TEAMS.map(t=>({name:t.name,coach:t.coach,wins:0,losses:0,pts_for:0,pts_against:0}));
+
+function playerTeam(name){ return (ALL_PLAYERS.find(p=>p.name===name)||{}).team||null; }
+function playerGameKey(playerName,round){
+  const team=playerTeam(playerName); if(!team) return null;
+  const rd=SCHEDULE[round-1]; if(!rd) return null;
+  const gi=rd.games.findIndex(g=>g[0]===team||g[1]===team);
+  return gi>=0?`R${round}_${gi}`:null;
+}
+function getPlayerMatchForName(displayName){
+  const lower=displayName.toLowerCase().trim();
+  return ALL_PLAYERS.find(p=>{
+    const full=p.name.toLowerCase(), first=full.split(' ')[0];
+    return lower===full||lower===first;
+  })||null;
+}
+
+// Load all shared state from Supabase
+async function loadSharedState(){
+  const [ch, subs, gr, ar, st, pr, po, ae] = await Promise.all([
+    dbGetChallenges(),
+    dbGetSubmissions(),
+    dbGetGameResults(),
+    dbGetLeagueState('active_round'),
+    dbGetLeagueState('standings'),
+    dbGetLeagueState('power_rank'),
+    dbGetLeagueState('prop_overrides'),
+    dbGetLeagueState('admin_emails'),
+  ]);
+  challenges  = ch;
+  submissions = subs.map(r=>r.data||r);
+  gameResults = gr;
+  if (ar !== null) { activeRound = ar; currentRound = ar; }
+  if (st) standings = st;
+  if (pr) POWER_RANK = pr;
+  if (po) PROP_OVERRIDES = po;
+  if (ae) ADMIN_EMAILS = ae;
+  renderGames(); renderProps(); renderStandings();
+}
+
+// ══════════════════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════════════════
+function showAuthView(v){
+  document.getElementById('view-signin').style.display=v==='signin'?'block':'none';
+  document.getElementById('view-signup').style.display=v==='signup'?'block':'none';
+  document.getElementById('si-err').style.display='none';
+  document.getElementById('su-err').style.display='none';
+}
+
+function setAuthLoading(form,on){
+  const btn=document.getElementById(form==='in'?'si-btn':'su-btn');
+  if(btn){btn.disabled=on; btn.textContent=on?'Please wait...':(form==='in'?'Sign In →':'Create Account →');}
+}
+
+async function doSignUp(){
+  const name=document.getElementById('su-name').value.trim();
+  const email=document.getElementById('su-email').value.trim().toLowerCase();
+  const pass=document.getElementById('su-pass').value;
+  const err=document.getElementById('su-err');
+  err.style.display='none';
+  if(!name){err.textContent='Enter a display name.';err.style.display='block';return;}
+  if(!email.includes('@')){err.textContent='Enter a valid email.';err.style.display='block';return;}
+  if(pass.length<6){err.textContent='Password must be 6+ characters.';err.style.display='block';return;}
+  setAuthLoading('up',true);
+  const existing=await dbGetAccount(email);
+  if(existing && !existing._error){err.textContent='Email already registered. Sign in.';err.style.display='block';setAuthLoading('up',false);return;}
+  const saveRes = await dbSaveAccount({email,name,password_hash:hashPass(pass),wallet:1000,bets:[]});
+  if(saveRes && saveRes._error){
+    err.textContent='Could not save account: '+saveRes._error;
+    err.style.display='block';setAuthLoading('up',false);return;
+  }
+  setAuthLoading('up',false);
+  await loginSuccess(email);
+}
+
+async function doSignIn(){
+  const email=document.getElementById('si-email').value.trim().toLowerCase();
+  const pass=document.getElementById('si-pass').value;
+  const err=document.getElementById('si-err');
+  err.style.display='none';
+  setAuthLoading('in',true);
+  const acct=await dbGetAccount(email);
+  if(!acct||acct._error){err.textContent='No account found. Create one first.';err.style.display='block';setAuthLoading('in',false);return;}
+  if(acct.password_hash!==hashPass(pass)){err.textContent='Incorrect password.';err.style.display='block';setAuthLoading('in',false);return;}
+  setAuthLoading('in',false);
+  await loginSuccess(email);
+}
+
+async function persistUser(){
+  if(!currentUser) return;
+  await dbUpdateAccount(currentUser.email,{wallet,bets:myBets});
+}
+
+async function loginSuccess(email){
+  const acct=await dbGetAccount(email);
+  if(!acct) return;
+  currentUser={email,name:acct.name};
+  wallet=acct.wallet??1000;
+  myBets=acct.bets??[];
+  const match=getPlayerMatchForName(acct.name);
+  currentUser.linkedPlayer=match?match.name:null;
+  currentUser.linkedTeam=match?match.team:null;
+  // Save session device-locally — only this device will auto-login
+  saveSession({email,name:acct.name});
+  const modal=document.getElementById('authModal');
+  if(modal) modal.style.display='none';
+  document.getElementById('userName').textContent=currentUser.name;
+  document.getElementById('userAv').textContent=currentUser.name[0].toUpperCase();
+  updateWalletUI();
+  await loadSharedState();
+  await refreshFriendSelects();
+  renderChallenges();
+  renderMyBets();
+  if(isAdmin(email)){
+    document.getElementById('results-admin-section').style.display='block';
+    renderAdminPending();
+    renderPowerRankEditor();
+    renderPropLineEditor();
+    renderAdminList();
+  }
+  populateResultsForm();
+}
+
+async function doLogout(){
+  await persistUser();
+  currentUser=null; wallet=1000; myBets=[]; betSlip=[];
+  clearSession();
+  renderSlip();
+  document.getElementById('userName').textContent='...';
+  document.getElementById('userAv').textContent='?';
+  document.getElementById('walletDisp').textContent='1,000 coins';
+  document.getElementById('authModal').style.display='flex';
+  showAuthView('signin');
+}
+
+// ══════════════════════════════════════════════════════
+//  BET SLIP
+// ══════════════════════════════════════════════════════
+function addToBetSlip(id, label, odds, oppLabel, oppOdds) {
+  // oppLabel/oppOdds = the other side (for friend challenge)
+  if (betSlip.find(b=>b.id===id)) {
+    betSlip = betSlip.filter(b=>b.id!==id);
+    document.querySelectorAll(`[data-bid="${id}"]`).forEach(el=>el.classList.remove('selected'));
+  } else {
+    betSlip.push({id, label, odds, oppLabel: oppLabel||'Opposite side', oppOdds: oppOdds||odds});
+    document.querySelectorAll(`[data-bid="${id}"]`).forEach(el=>el.classList.add('selected'));
+  }
+  renderSlip();
+}
+
+function renderSlip() {
+  const n = betSlip.length;
+  document.getElementById('slip-cnt').textContent = n;
+  const empty    = document.getElementById('slip-empty');
+  const items    = document.getElementById('slip-items');
+  const parlay   = document.getElementById('slip-parlay');
+  const wagerSec = document.getElementById('slip-wager');
+  if (n===0) {
+    empty.style.display='block'; items.innerHTML='';
+    parlay.style.display='none'; wagerSec.style.display='none';
+    challengeMode=false;
+    return;
+  }
+  empty.style.display='none'; wagerSec.style.display='block';
+  items.innerHTML = betSlip.map(b=>`
+    <div class="slip-item">
+      <div><div class="si-name">${b.label}</div><div class="si-odds">${oddsStr(b.odds)}</div></div>
+      <span class="si-rm" onclick="removeSlip('${b.id}')">✕</span>
+    </div>`).join('');
+  if (n>1) {
+    parlay.style.display='flex';
+    const mult = betSlip.reduce((a,b)=>a*oddsToMult(b.odds),1);
+    document.getElementById('parlay-mult').textContent = mult.toFixed(2)+'x';
+  } else { parlay.style.display='none'; }
+  updatePayout();
+  updateSlipModeUI();
+}
+
+function removeSlip(id) {
+  betSlip = betSlip.filter(b=>b.id!==id);
+  document.querySelectorAll(`[data-bid="${id}"]`).forEach(el=>el.classList.remove('selected'));
+  renderSlip();
+}
+function qw(amt) { document.getElementById('wager-input').value=amt; updatePayout(); }
+function updatePayout() {
+  const w = parseFloat(document.getElementById('wager-input').value)||0;
+  if (!betSlip.length) return;
+  const mult = betSlip.length===1 ? oddsToMult(betSlip[0].odds) : betSlip.reduce((a,b)=>a*oddsToMult(b.odds),1);
+  const profit = w*mult - w;
+  document.getElementById('payout-val').textContent = `+${fmtCoins(profit)} (${fmtCoins(w*mult)} total)`;
+}
+
+function isRestrictedBet(slip) {
+  if (!currentUser || !currentUser.linkedTeam) return false;
+  const team = currentUser.linkedTeam;
+  return slip.some(b => b.label && b.label.includes(team));
+}
+
+// ── MODE SELECTION (house vs friend) ──
+let slipMode = 'house'; // 'house' | 'friend'
+
+function selectMode(mode) {
+  if (!currentUser) { showToast('Sign in first!', true); return; }
+  slipMode = mode;
+  updateSlipModeUI();
+}
+
+function updateSlipModeUI() {
+  const btnH  = document.getElementById('btnHouse');
+  const btnF  = document.getElementById('btnFriend');
+  const fs    = document.getElementById('friendSelector');
+  const conf  = document.getElementById('confirmBtn');
+  if (!btnH) return;
+  btnH.classList.toggle('active', slipMode === 'house');
+  btnF.classList.toggle('active', slipMode === 'friend');
+  if (slipMode === 'friend') {
+    fs.classList.add('show');
+    refreshFriendSelects();
+    if (conf) { conf.textContent = '⚡ Send Challenge →'; conf.classList.add('mode-friend'); }
+  } else {
+    fs.classList.remove('show');
+    if (conf) { conf.textContent = 'Place Bet →'; conf.classList.remove('mode-friend'); }
+  }
+}
+
+function confirmSlip() {
+  if (slipMode === 'friend') sendChallengeFromSlip();
+  else placeBet();
+}
+
+async function placeBet() {
+  if (!currentUser) { showToast('Sign in first!', true); return; }
+  if (isRestrictedBet(betSlip)) { showToast('⛔ Can\'t bet on your own team\'s games!', true); return; }
+  const w = parseFloat(document.getElementById('wager-input').value)||0;
+  if (w <= 0)    { showToast('Enter a wager!', true); return; }
+  if (w > wallet){ showToast('Not enough coins!', true); return; }
+  const mult   = betSlip.length === 1 ? oddsToMult(betSlip[0].odds) : betSlip.reduce((a,b)=>a*oddsToMult(b.odds),1);
+  const profit = w * mult - w;
+  myBets.unshift({ id:Date.now(), legs:[...betSlip], wager:w, profit, payout:w*mult,
+    status:'pending', type:betSlip.length>1?`${betSlip.length}-Leg Parlay`:'Straight', placed:new Date().toLocaleString() });
+  wallet -= w;
+  await persistUser();
+  updateWalletUI();
+  clearSlip();
+  renderMyBets();
+  showToast(`🎰 ${fmtCoins(w)} coins locked in!`);
+}
+
+function updateWalletUI() {
+  document.getElementById('walletDisp').textContent = fmtCoins(wallet)+' coins';
+}
+
+async function refreshFriendSelects() {
+  const all = await dbGetAllAccounts();
+  const others = all
+    .filter(a => a.email !== currentUser?.email)
+    .map(a => `<option value="${a.email}">${a.name}</option>`)
+    .join('');
+  const sel = document.getElementById('cf-mini-select');
+  if (sel) sel.innerHTML = `<option value="">— Select a friend —</option>` + others;
+}
+
+async function sendChallengeFromSlip() {
+  if (!currentUser) { showToast('Sign in first!', true); return; }
+  if (isRestrictedBet(betSlip)) { showToast('⛔ Can\'t challenge on your own team\'s games!', true); return; }
+  const friendEmail = document.getElementById('cf-mini-select').value;
+  const w = parseFloat(document.getElementById('wager-input').value)||0;
+  if (!friendEmail)    { showToast('Pick a friend!', true); return; }
+  if (w <= 0)          { showToast('Enter a wager amount!', true); return; }
+  if (w > wallet)      { showToast('Not enough coins!', true); return; }
+  if (!betSlip.length) { showToast('Add picks first!', true); return; }
+  const friendAcct = await dbGetAccount(friendEmail);
+  const friendName = friendAcct?.name || friendEmail;
+  const theirLegs  = betSlip.map(b => ({ id:b.id+'_opp', label:b.oppLabel, odds:b.oppOdds }));
+  const ch = {
+    id: Date.now(),
+    from_email: currentUser.email, from_name: currentUser.name,
+    to_email: friendEmail,         to_name: friendName,
+    my_legs: [...betSlip], their_legs: theirLegs,
+    amount: w, status: 'open',
+    created: new Date().toLocaleString()
+  };
+  await dbSaveChallenge(ch);
+  challenges.unshift(ch);
+  wallet -= w;
+  await persistUser();
+  updateWalletUI();
+  clearSlip();
+  renderChallenges();
+  showToast(`⚡ Challenge sent to ${friendName}!`);
+}
+
+function clearSlip() {
+  betSlip.forEach(b => document.querySelectorAll(`[data-bid="${b.id}"]`).forEach(el=>el.classList.remove('selected')));
+  betSlip = [];
+  document.getElementById('wager-input').value = '';
+  slipMode = 'house';
+  renderSlip();
+}
+
+async function acceptChallenge(id) {
+  if (!currentUser) { showToast('Sign in first!',true); return; }
+  const ch = challenges.find(c=>c.id===id);
+  if (!ch) return;
+  if (ch.amount > wallet) { showToast('Not enough coins to accept!',true); return; }
+  ch.status = 'pending';
+  wallet -= ch.amount;
+  await Promise.all([persistUser(), dbUpdateChallenge(id, {status:'pending'})]);
+  updateWalletUI();
+  renderChallenges();
+  showToast(`✅ Accepted! ${fmtCoins(ch.amount)} coins locked in each side.`);
+}
+
+async function declineChallenge(id) {
+  const ch = challenges.find(c=>c.id===id);
+  if (!ch) return;
+  if (ch.from_email === currentUser?.email && ch.status === 'open') {
+    wallet += ch.amount;
+    await persistUser();
+    updateWalletUI();
+  }
+  ch.status = 'declined';
+  await dbUpdateChallenge(id, {status:'declined'});
+  renderChallenges();
+  showToast('Challenge declined.');
+}
+
+function renderChallenges() {
+  if (!currentUser) return;
+  const statusCls = s => s==='open'?'ch-open':s==='pending'?'ch-pending':'ch-declined';
+
+  const incoming = challenges.filter(c=>c.to_email===currentUser.email && c.status==='open');
+
+  // Update badge
+  const badge = document.getElementById('chBadge');
+  if (badge) {
+    if (incoming.length > 0) { badge.textContent = incoming.length; badge.style.display='inline-block'; }
+    else badge.style.display = 'none';
+  }
+
+  document.getElementById('incoming-ch').innerHTML = incoming.length===0
+    ? `<p style="color:var(--muted);font-size:.82rem;padding:4px 0;">No incoming challenges right now.</p>`
+    : incoming.map(ch=>`
+      <div class="challenge-card" style="border-color:rgba(108,63,255,.35);background:rgba(108,63,255,.06);">
+        <div class="ch-head">
+          <div class="ch-from">⚡ From <strong>${ch.from_name}</strong> · ${ch.created}</div>
+          <span class="ch-status ch-open">Open</span>
+        </div>
+        <div class="ch-pick" style="margin-bottom:4px;">Their picks:</div>
+        ${(ch.my_legs||[]).map(l=>`<div style="font-size:.8rem;color:var(--muted);padding:2px 0;">• ${l.label} <span style="color:var(--gold);font-family:'Space Mono';">${oddsStr(l.odds)}</span></div>`).join('')}
+        <div class="ch-pick" style="margin-top:8px;margin-bottom:4px;">Your side:</div>
+        ${(ch.their_legs||[]).map(l=>`<div style="font-size:.8rem;color:var(--muted);padding:2px 0;">• ${l.label} <span style="color:var(--gold);font-family:'Space Mono';">${oddsStr(l.odds)}</span></div>`).join('')}
+        <div class="ch-amount">${fmtCoins(ch.amount)} coins each</div>
+        <div class="ch-actions">
+          <div class="btn-accept" onclick="acceptChallenge(${ch.id})">✅ Accept</div>
+          <div class="btn-decline" onclick="declineChallenge(${ch.id})">Decline</div>
+        </div>
+      </div>`).join('');
+
+  const sent = challenges.filter(c=>c.from_email===currentUser.email);
+  document.getElementById('sent-ch').innerHTML = sent.length===0
+    ? `<p style="color:var(--muted);font-size:.82rem;padding:4px 0;">No challenges sent yet.</p>`
+    : sent.map(ch=>`
+      <div class="challenge-card">
+        <div class="ch-head">
+          <div class="ch-from">To <strong>${ch.to_name}</strong> · ${ch.created}</div>
+          <span class="ch-status ${statusCls(ch.status)}">${ch.status.toUpperCase()}</span>
+        </div>
+        <div class="ch-pick" style="margin-bottom:4px;">Your picks:</div>
+        ${(ch.my_legs||[]).map(l=>`<div style="font-size:.8rem;color:var(--muted);padding:2px 0;">• ${l.label} <span style="color:var(--gold);font-family:'Space Mono';">${oddsStr(l.odds)}</span></div>`).join('')}
+        <div class="ch-amount">${fmtCoins(ch.amount)} coins at stake</div>
+        ${ch.status==='open'?`<div class="ch-actions"><div class="btn-decline" style="flex:1;text-align:center;" onclick="declineChallenge(${ch.id})">Cancel</div></div>`:''}
+      </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════
+//  GAMES
+// ══════════════════════════════════════════════════════
+function renderGames() {
+  document.getElementById('roundNav').innerHTML = SCHEDULE.map(r=>{
+    const locked = r.round > activeRound;
+    const done   = gameResults && Object.keys(gameResults).filter(k=>k.startsWith(`R${r.round}_`)).length === 4;
+    const cls = r.round===currentRound ? 'active' : '';
+    const style = locked ? 'opacity:.4;cursor:not-allowed;' : '';
+    const suffix = locked ? ' 🔒' : done ? ' ✅' : '';
+    return `<button class="rn-btn ${cls}" style="${style}" onclick="${locked?'showToast(\'Round not yet open for betting\',true)':'setRound('+r.round+')'}"
+      >Round ${r.round}${suffix}</button>`;
+  }).join('');
+
+  if (currentRound > activeRound) {
+    document.getElementById('games-container').innerHTML = `
+      <div class="game-card" style="text-align:center;padding:2rem;">
+        <div style="font-size:2rem;margin-bottom:.5rem;">🔒</div>
+        <div style="font-family:'Bebas Neue';font-size:1.3rem;letter-spacing:2px;color:var(--muted);">Round ${currentRound} Not Yet Open</div>
+        <div style="font-size:.8rem;color:var(--muted);margin-top:.5rem;">Odds will be posted once the current round is complete.</div>
+      </div>`;
+    return;
+  }
+
+  const rd = SCHEDULE[currentRound-1];
+  document.getElementById('games-container').innerHTML = rd.games.map((game,i)=>{
+    const [t1,t2]=game;
+    const key=`R${currentRound}_${i}`;
+    const result = gameResults[key];
+
+    // If game already has an approved result, show the score instead
+    if (result) {
+      const winner = result.s1>result.s2?t1:t2;
+      return `<div class="game-card">
+        <div class="game-meta"><span class="game-round-lbl">Round ${currentRound} · FINAL</span><span style="color:var(--green);">✅ Official</span></div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:1rem;padding:.5rem 0;">
+          <div><div class="team-name" style="${winner===t1?'color:var(--gold)':''}">${t1}</div></div>
+          <div style="text-align:center;font-family:'Bebas Neue';font-size:2rem;">${result.s1}–${result.s2}</div>
+          <div><div class="team-name right" style="${winner===t2?'color:var(--gold)':''}">${t2}</div></div>
+        </div>
+      </div>`;
+    }
+
+    const o=matchupOdds(t1,t2);
+    const r1=POWER_RANK[t1], r2=POWER_RANK[t2], t1Fav=r1<r2;
+    const team1=TEAMS.find(t=>t.name===t1), team2=TEAMS.find(t=>t.name===t2);
+    const pfx=`g${currentRound}_${i}`;
+    const safe=s=>s.replace(/'/g,"\\'");
+    const spA=o.spread===0?'PK':(o.spread<0?`${o.spread}`:`+${o.spread}`);
+    const spB=o.spread===0?'PK':(o.spread>0?`-${o.spread}`:`+${Math.abs(o.spread)}`);
+    const addCall=(id,label,odds,oppLabel,oppOdds)=>
+      `addToBetSlip('${id}','${safe(label)}',${odds},'${safe(oppLabel)}',${oppOdds})`;
+    return `
+    <div class="game-card">
+      <div class="game-meta">
+        <span class="game-round-lbl">Round ${currentRound}</span>
+        <span>3-on-3 · To 17 · Win by 2 · Dead 21</span>
+      </div>
+      <div class="teams-row">
+        <div>
+          <div class="team-name">${t1} <span style="font-family:'Space Mono';font-size:.55rem;color:var(--muted);">#${r1}</span></div>
+          <div class="team-sub">Coach ${team1?.coach}</div>
+        </div>
+        <div class="vs-circle">VS</div>
+        <div>
+          <div class="team-name right"><span style="font-family:'Space Mono';font-size:.55rem;color:var(--muted);">#${r2}</span> ${t2}</div>
+          <div class="team-sub right">Coach ${team2?.coach}</div>
+        </div>
+      </div>
+      <div class="bet-headers"><div class="col-header">Moneyline</div><div class="col-header">Spread</div><div class="col-header">Total ${o.total}</div></div>
+      <div class="bet-grid-3" style="margin-bottom:5px;">
+        <div class="bet-cell" data-bid="${pfx}_ml1" onclick="${addCall(pfx+'_ml1',t1+' ML · R'+currentRound,o.mlA,t2+' ML · R'+currentRound,o.mlB)}">
+          <div class="bc-label">${t1.split(' ').slice(-1)[0]}</div>
+          <div class="bc-odds ${t1Fav?'fav':'dog'}">${oddsStr(o.mlA)}</div>
+        </div>
+        <div class="bet-cell" data-bid="${pfx}_sp1" onclick="${addCall(pfx+'_sp1',t1+' '+spA+' · R'+currentRound,o.spreadOddsA,t2+' '+spB+' · R'+currentRound,o.spreadOddsB)}">
+          <div class="bc-label">${t1.split(' ').slice(-1)[0]}</div>
+          <div class="bc-line">${spA}</div>
+          <div class="bc-odds">${oddsStr(o.spreadOddsA)}</div>
+        </div>
+        <div class="bet-cell" data-bid="${pfx}_ov" onclick="${addCall(pfx+'_ov','Over '+o.total+' · R'+currentRound,o.totalOddsO,'Under '+o.total+' · R'+currentRound,o.totalOddsU)}">
+          <div class="bc-label">Over</div><div class="bc-line">${o.total}</div>
+          <div class="bc-odds">${oddsStr(o.totalOddsO)}</div>
+        </div>
+      </div>
+      <div class="bet-grid-3">
+        <div class="bet-cell" data-bid="${pfx}_ml2" onclick="${addCall(pfx+'_ml2',t2+' ML · R'+currentRound,o.mlB,t1+' ML · R'+currentRound,o.mlA)}">
+          <div class="bc-label">${t2.split(' ').slice(-1)[0]}</div>
+          <div class="bc-odds ${t1Fav?'dog':'fav'}">${oddsStr(o.mlB)}</div>
+        </div>
+        <div class="bet-cell" data-bid="${pfx}_sp2" onclick="${addCall(pfx+'_sp2',t2+' '+spB+' · R'+currentRound,o.spreadOddsB,t1+' '+spA+' · R'+currentRound,o.spreadOddsA)}">
+          <div class="bc-label">${t2.split(' ').slice(-1)[0]}</div>
+          <div class="bc-line">${spB}</div>
+          <div class="bc-odds">${oddsStr(o.spreadOddsB)}</div>
+        </div>
+        <div class="bet-cell" data-bid="${pfx}_un" onclick="${addCall(pfx+'_un','Under '+o.total+' · R'+currentRound,o.totalOddsU,'Over '+o.total+' · R'+currentRound,o.totalOddsO)}">
+          <div class="bc-label">Under</div><div class="bc-line">${o.total}</div>
+          <div class="bc-odds">${oddsStr(o.totalOddsU)}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function setRound(r) {
+  if (r > activeRound) { showToast('Round not yet open for betting',true); return; }
+  currentRound=r; renderGames(); renderProps();
+}
+
+// ══════════════════════════════════════════════════════
+//  PROPS — points only, stars & seconds only
+// ══════════════════════════════════════════════════════
+function renderProps() {
+  const safe = s => s.replace(/'/g,"\\'");
+
+  // Build a lookup: for each team, who do they play in the current round?
+  const opponentMap = {}; // { teamName: opponentTeamName }
+  const rd = SCHEDULE[currentRound - 1];
+  rd.games.forEach(([t1, t2]) => {
+    opponentMap[t1] = t2;
+    opponentMap[t2] = t1;
+  });
+
+  // Only tiers 1-4 get prop cards
+  const eligible = ALL_PLAYERS.filter(p => (PLAYER_TIER[p.name] ?? 5) <= 4);
+
+  // Sort: best team first, then within team: stars before seconds
+  const sorted = [...eligible].sort((a, b) => {
+    const rankDiff = (POWER_RANK[a.team] ?? 9) - (POWER_RANK[b.team] ?? 9);
+    if (rankDiff !== 0) return rankDiff;
+    return (PLAYER_TIER[a.name] ?? 3) - (PLAYER_TIER[b.name] ?? 3);
+  });
+
+  if (!sorted.length) {
+    document.getElementById('props-container').innerHTML = `<p style="color:var(--muted)">No props available.</p>`;
+    return;
+  }
+
+  const html = sorted.map((player, i) => {
+    const tier     = PLAYER_TIER[player.name] ?? 5;
+    const opponent = opponentMap[player.team] || null;
+    const line     = pointsPropLine(player.name, player.team);
+    if (line === null) return '';
+    const { overOdds, underOdds } = propOdds(player.name, player.team, opponent || player.team);
+    const pfx      = `pp_${currentRound}_${i}`;
+    const initials = player.name.split(' ').map(w => w[0]).join('').slice(0, 2);
+    const avClass  = tier === 1 ? 'player-av star' : tier === 2 ? 'player-av second' : 'player-av';
+    const tierLabel = ['','⭐ T1','T2','T3','T4'][tier] || '';
+    const tierStyle = tier === 1 ? 'sb-star' : tier === 2 ? 'sb-second' : 'background:rgba(96,96,160,.12);color:var(--muted);border:1px solid var(--border);';
+    const starBadge = tier <= 2
+      ? `<span class="star-badge ${tierStyle}">${tierLabel}</span>`
+      : `<span style="display:inline-block;font-family:'Space Mono';font-size:.54rem;padding:1px 5px;border-radius:3px;margin-left:6px;vertical-align:middle;background:rgba(96,96,160,.1);color:var(--muted);border:1px solid var(--border);">${tierLabel}</span>`;
+
+    const oppLabel = opponent
+      ? `vs ${opponent.split(' ').slice(-1)[0]} · R${currentRound}`
+      : `Round ${currentRound}`;
+    const myRank  = POWER_RANK[player.team] ?? 4;
+    const oppRank = opponent ? (POWER_RANK[opponent] ?? 4) : 4;
+    const favored = myRank < oppRank;
+    const gap     = Math.abs(myRank - oppRank);
+    const gameCtx = opponent
+      ? `<span style="font-family:'Space Mono';font-size:.58rem;color:${favored?'var(--green)':'var(--red)'};">${favored?'▲ FAV':'▼ DOG'}${gap>=3?' (big)':' (close)'}</span>`
+      : '';
+
+    // Over odds color: favored = red (chalk), underdog = green
+    const ovCls = overOdds < 0 ? 'fav' : 'dog';
+    const unCls = underOdds < 0 ? 'fav' : 'dog';
+
+    return `
+    <div class="prop-card">
+      <div class="prop-header">
+        <div class="${avClass}">${initials}</div>
+        <div style="flex:1;">
+          <div class="player-name-big">${player.name}${starBadge}</div>
+          <div class="player-sub">${player.team} &nbsp;·&nbsp; ${oppLabel} &nbsp;${gameCtx}</div>
+        </div>
+      </div>
+      <div class="prop-row">
+        <div class="over-cell" data-bid="${pfx}_ov"
+          onclick="addToBetSlip('${pfx}_ov','O${line} Pts — ${safe(player.name)}',${overOdds},'U${line} Pts — ${safe(player.name)}',${underOdds})">
+          <div class="dir-label">OVER</div>
+          <div class="dir-odds ${ovCls}">${oddsStr(overOdds)}</div>
+        </div>
+        <div class="line-center">
+          <div class="line-val">${line}</div>
+          <div class="line-stat">Points</div>
+        </div>
+        <div class="under-cell" data-bid="${pfx}_un"
+          onclick="addToBetSlip('${pfx}_un','U${line} Pts — ${safe(player.name)}',${underOdds},'O${line} Pts — ${safe(player.name)}',${overOdds})">
+          <div class="dir-label">UNDER</div>
+          <div class="dir-odds ${unCls}">${oddsStr(underOdds)}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('props-container').innerHTML = html;
+}
+
+// ══════════════════════════════════════════════════════
+//  STANDINGS
+// ══════════════════════════════════════════════════════
+function renderStandings() {
+  const sorted=[...standings].sort((a,b)=>{
+    const d=b.wins-a.wins; if(d!==0) return d;
+    const ptsDiff=(b.pts_for-b.pts_against)-(a.pts_for-a.pts_against); if(ptsDiff!==0) return ptsDiff;
+    return (POWER_RANK[a.name]??9)-(POWER_RANK[b.name]??9);
+  });
+  document.getElementById('standings-body').innerHTML = sorted.map((t,i)=>{
+    const pr=POWER_RANK[t.name];
+    const top=pr<=2?`<span style="margin-left:5px;font-size:.56rem;background:rgba(240,180,41,.15);color:var(--gold);border:1px solid rgba(240,180,41,.3);padding:1px 5px;border-radius:3px;font-family:'Space Mono';">⚡TOP</span>`:'';
+    return `<tr>
+      <td style="font-family:'Space Mono';color:var(--muted);font-size:.75rem;">${i+1}</td>
+      <td style="font-weight:600;">${t.name}${top}</td>
+      <td style="color:var(--muted);font-size:.72rem;">Coach ${t.coach}</td>
+      <td style="font-family:'Space Mono';color:var(--gold);font-size:.75rem;">#${pr}</td>
+      <td style="font-family:'Space Mono';color:var(--green);">${t.wins}</td>
+      <td style="font-family:'Space Mono';color:var(--red);">${t.losses}</td>
+      <td style="font-family:'Space Mono';font-size:.72rem;color:var(--muted);">${t.pts_for||0}–${t.pts_against||0}</td>
+    </tr>`;}).join('');
+}
+
+// ══════════════════════════════════════════════════════
+//  SCHEDULE
+// ══════════════════════════════════════════════════════
+function renderSchedule() {
+  document.getElementById('schedule-container').innerHTML = SCHEDULE.map(r=>`
+    <div class="sched-round">
+      <div class="round-bar">Round ${r.round}</div>
+      <div class="sched-grid">
+        ${r.games.map(g=>`<div class="sched-game">${g[0]} <span style="color:var(--muted)">vs</span> ${g[1]}</div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════
+//  ROSTERS
+// ══════════════════════════════════════════════════════
+function renderRosters() {
+  const sorted = [...TEAMS].sort((a,b)=>(POWER_RANK[a.name]??9)-(POWER_RANK[b.name]??9));
+  document.getElementById('roster-container').innerHTML = sorted.map(t=>`
+    <div class="rc">
+      <div class="rc-head">
+        <div class="rc-name">${t.name}</div>
+        <div class="rc-coach">Coach: ${t.coach} · Power #${POWER_RANK[t.name]}</div>
+      </div>
+      <div class="rc-body">
+        ${t.players.map((p,i)=>{
+          const tier=PLAYER_TIER[p]??5;
+          const badge=tier===1?'<span style="font-size:.58rem;color:var(--gold);font-family:\'Space Mono\';margin-left:5px;">⭐T1</span>':
+                      tier===2?'<span style="font-size:.58rem;color:var(--accent);font-family:\'Space Mono\';margin-left:5px;">T2</span>':
+                      tier===3?'<span style="font-size:.58rem;color:var(--muted);font-family:\'Space Mono\';margin-left:5px;">T3</span>':
+                      tier===4?'<span style="font-size:.58rem;color:var(--muted);font-family:\'Space Mono\';margin-left:5px;opacity:.6;">T4</span>':'';
+          return `<div class="pr-row"><div class="pr-num">${i+1}</div><div style="font-size:.83rem;font-weight:500;">${p}${badge}</div></div>`;
+        }).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════
+//  MY BETS
+// ══════════════════════════════════════════════════════
+function renderMyBets() {
+  const el=document.getElementById('mybets-container');
+  if (!myBets.length) { el.innerHTML=`<p style="color:var(--muted);font-size:.85rem;">No bets yet. Head to Games or Props.</p>`; return; }
+  el.innerHTML = myBets.map(b=>`
+    <div class="my-bet-card">
+      <span class="bs-badge bs-${b.status}">${b.status.toUpperCase()}</span>
+      <div style="font-size:.7rem;color:var(--muted);font-family:'Space Mono';margin-bottom:7px;">${b.type} · ${b.placed}</div>
+      <div style="margin:6px 0;">
+        ${b.legs.map(l=>`<div class="bet-leg-row">${l.label} <span style="color:var(--gold);font-family:'Space Mono';">${oddsStr(l.odds)}</span></div>`).join('')}
+      </div>
+      <div class="bet-footer">
+        <span style="font-family:'Space Mono';color:var(--muted);">Wagered: ${fmtCoins(b.wager)}</span>
+        <span style="font-family:'Space Mono';color:var(--green);font-weight:700;">To Win: +${fmtCoins(b.profit)}</span>
+      </div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════
+//  RESULTS — submission, admin approval, standings update
+// ══════════════════════════════════════════════════════
+function populateResultsForm() {
+  // Rounds
+  const roundOpts = SCHEDULE.map(r=>`<option value="${r.round}">Round ${r.round}</option>`).join('');
+  ['res-round','res-player-round'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.innerHTML='<option value="">— Round —</option>'+roundOpts;
+  });
+  // Players
+  const playerOpts = ALL_PLAYERS
+    .filter(p=>(PLAYER_TIER[p.name]??5)<=4)
+    .sort((a,b)=>(PLAYER_TIER[a.name]??5)-(PLAYER_TIER[b.name]??5)||(PLAYER_RANK[a.name]??0)-(PLAYER_RANK[b.name]??0))
+    .map(p=>`<option value="${p.name}">${p.name} · ${p.team.split(' ').slice(-1)[0]}</option>`).join('');
+  const pel=document.getElementById('res-player'); if(pel) pel.innerHTML='<option value="">— Player —</option>'+playerOpts;
+  populateResGames();
+  renderMySubmissions();
+}
+
+function populateResGames() {
+  const rnd = parseInt(document.getElementById('res-round')?.value)||0;
+  const el = document.getElementById('res-game'); if(!el) return;
+  if (!rnd) { el.innerHTML='<option>— Select round first —</option>'; return; }
+  const rd = SCHEDULE[rnd-1]; if(!rd) return;
+  el.innerHTML = rd.games.map((g,i)=>`<option value="${i}">${g[0]} vs ${g[1]}</option>`).join('');
+  const t1Label=document.getElementById('res-t1-label'), t2Label=document.getElementById('res-t2-label');
+  if(t1Label&&rd.games[0]){t1Label.textContent=rd.games[0][0]+' Score'; t2Label.textContent=rd.games[0][1]+' Score';}
+  el.onchange=()=>{
+    const gi=parseInt(el.value); const g=rd.games[gi];
+    if(g&&t1Label&&t2Label){t1Label.textContent=g[0]+' Score'; t2Label.textContent=g[1]+' Score';}
+  };
+}
+
+async function submitGameResult() {
+  if (!currentUser) { showToast('Sign in first!',true); return; }
+  const rnd = parseInt(document.getElementById('res-round').value);
+  const gi  = parseInt(document.getElementById('res-game').value);
+  const s1  = parseInt(document.getElementById('res-score1').value);
+  const s2  = parseInt(document.getElementById('res-score2').value);
+  if (!rnd||isNaN(gi)||isNaN(s1)||isNaN(s2)) { showToast('Fill in all fields!',true); return; }
+  const g = SCHEDULE[rnd-1]?.games[gi]; if(!g) return;
+  const key = `R${rnd}_${gi}`;
+  if (gameResults[key]) { showToast('This game already has an official result.',true); return; }
+  const sub = { id:Date.now(), type:'game', key, round:rnd, gi,
+    t1:g[0], t2:g[1], s1, s2,
+    submitter:currentUser.name, submitterEmail:currentUser.email,
+    status:'pending', submitted:new Date().toLocaleString() };
+  await dbSaveSubmission(sub);
+  submissions.unshift(sub);
+  document.getElementById('res-score1').value='';
+  document.getElementById('res-score2').value='';
+  renderMySubmissions();
+  showToast('✅ Result submitted for review!');
+}
+
+async function submitPlayerPoints() {
+  if (!currentUser) { showToast('Sign in first!',true); return; }
+  const player = document.getElementById('res-player').value;
+  const pts    = parseInt(document.getElementById('res-player-pts').value);
+  const rnd    = parseInt(document.getElementById('res-player-round').value);
+  if (!player||isNaN(pts)||!rnd) { showToast('Fill in all fields!',true); return; }
+  const sub = { id:Date.now(), type:'player', player, pts, round:rnd,
+    submitter:currentUser.name, submitterEmail:currentUser.email,
+    status:'pending', submitted:new Date().toLocaleString() };
+  await dbSaveSubmission(sub);
+  submissions.unshift(sub);
+  document.getElementById('res-player-pts').value='';
+  renderMySubmissions();
+  showToast('✅ Points submitted for review!');
+}
+
+function renderMySubmissions() {
+  if (!currentUser) return;
+  const el = document.getElementById('my-submissions'); if(!el) return;
+  const mine = submissions.filter(s=>s.submitterEmail===currentUser.email);
+  if (!mine.length) { el.innerHTML=`<p style="color:var(--muted);font-size:.82rem;">No submissions yet.</p>`; return; }
+  const statusColor = s=>s==='approved'?'var(--green)':s==='rejected'?'var(--red)':'var(--gold)';
+  el.innerHTML = mine.map(s=>`
+    <div class="game-card" style="padding:.9rem;margin-bottom:.7rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+        <span style="font-size:.8rem;font-weight:600;">${s.type==='game'?`${s.t1} vs ${s.t2} · R${s.round} · ${s.s1}–${s.s2}`:`${s.player} — ${s.pts} pts · R${s.round}`}</span>
+        <span style="font-family:'Space Mono';font-size:.58rem;color:${statusColor(s.status)};text-transform:uppercase;">${s.status}</span>
+      </div>
+      <div style="font-size:.68rem;color:var(--muted);font-family:'Space Mono';">${s.submitted}</div>
+    </div>`).join('');
+}
+
+function renderAdminPending() {
+  const el = document.getElementById('admin-pending'); if(!el) return;
+  const pending = submissions.filter(s=>s.status==='pending');
+  if (!pending.length) { el.innerHTML=`<p style="color:var(--muted);font-size:.82rem;">No pending submissions.</p>`; return; }
+  el.innerHTML = pending.map(s=>`
+    <div class="game-card" style="padding:.9rem;margin-bottom:.7rem;">
+      <div style="font-size:.75rem;color:var(--muted);font-family:'Space Mono';margin-bottom:5px;">${s.submitted} · by ${s.submitter}</div>
+      <div style="font-size:.9rem;font-weight:600;margin-bottom:10px;">
+        ${s.type==='game'?`🏀 ${s.t1} <span style="color:var(--gold);">${s.s1}</span> – <span style="color:var(--gold);">${s.s2}</span> ${s.t2} · R${s.round}`:`📊 ${s.player}: ${s.pts} pts · R${s.round}`}
+      </div>
+      <div style="display:flex;gap:8px;">
+        <div class="btn-accept" style="flex:1;text-align:center;" onclick="approveSubmission(${s.id})">✅ Approve</div>
+        <div class="btn-decline" onclick="rejectSubmission(${s.id})">Reject</div>
+      </div>
+    </div>`).join('');
+}
+
+async function approveSubmission(id) {
+  const s = submissions.find(x=>x.id===id); if(!s) return;
+  s.status = 'approved';
+  if (s.type === 'game') {
+    gameResults[s.key] = {t1:s.t1, t2:s.t2, s1:s.s1, s2:s.s2};
+    await dbSaveGameResult(s.key, gameResults[s.key]);
+    const winner = s.s1>s.s2 ? s.t1 : s.t2;
+    const loser  = s.s1>s.s2 ? s.t2 : s.t1;
+    const ws = standings.find(x=>x.name===winner);
+    const ls = standings.find(x=>x.name===loser);
+    if(ws){ ws.wins++; ws.pts_for=(ws.pts_for||0)+Math.max(s.s1,s.s2); ws.pts_against=(ws.pts_against||0)+Math.min(s.s1,s.s2); }
+    if(ls){ ls.losses++; ls.pts_for=(ls.pts_for||0)+Math.min(s.s1,s.s2); ls.pts_against=(ls.pts_against||0)+Math.max(s.s1,s.s2); }
+    await dbSetLeagueState('standings', standings);
+    const roundDone = SCHEDULE[s.round-1].games.every((_,gi)=>gameResults[`R${s.round}_${gi}`]);
+    if (roundDone && s.round === activeRound && activeRound < 7) {
+      activeRound++; currentRound = activeRound;
+      await dbSetLeagueState('active_round', activeRound);
+      showToast(`🏆 Round ${s.round} complete! Round ${activeRound} is now open.`);
+    }
+    renderGames(); renderStandings();
+  }
+  await dbUpdateSubmission(id, s);
+  renderAdminPending();
+  renderMySubmissions();
+  showToast('Submission approved!');
+}
+
+async function rejectSubmission(id) {
+  const s = submissions.find(x=>x.id===id); if(!s) return;
+  s.status = 'rejected';
+  await dbUpdateSubmission(id, s);
+  renderAdminPending();
+  renderMySubmissions();
+  showToast('Submission rejected.');
+}
+
+// ══════════════════════════════════════════════════════
+//  COMMISSIONER TOOLS
+// ══════════════════════════════════════════════════════
+function renderPowerRankEditor() {
+  const el = document.getElementById('power-rank-editor'); if (!el) return;
+  // Sort teams by current rank
+  const sorted = [...TEAMS].sort((a,b)=>(POWER_RANK[a.name]??9)-(POWER_RANK[b.name]??9));
+  el.innerHTML = sorted.map((t,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;">
+      <span style="font-family:'Space Mono';font-size:.65rem;color:var(--muted);width:20px;">#${i+1}</span>
+      <span style="flex:1;font-size:.85rem;font-weight:600;">${t.name}</span>
+      <input type="number" min="1" max="8" value="${POWER_RANK[t.name]??i+1}"
+        id="pr-${t.name.replace(/\s+/g,'_')}"
+        style="width:48px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:4px 6px;font-family:'Space Mono';font-size:.8rem;text-align:center;">
+    </div>`).join('');
+}
+
+async function savePowerRankings() {
+  const newRank = {};
+  TEAMS.forEach(t => {
+    const id = `pr-${t.name.replace(/\s+/g,'_')}`;
+    const val = parseInt(document.getElementById(id)?.value);
+    if (!isNaN(val)) newRank[t.name] = val;
+  });
+  // Validate — must be 1–8, no duplicates
+  const vals = Object.values(newRank);
+  if (vals.length !== 8 || new Set(vals).size !== 8 || vals.some(v=>v<1||v>8)) {
+    showToast('Each team must have a unique rank 1–8.', true); return;
+  }
+  POWER_RANK = newRank;
+  await dbSetConfig('power_rank', POWER_RANK);
+  renderGames(); renderProps(); renderStandings(); renderPowerRankEditor();
+  showToast('✅ Power rankings updated!');
+}
+
+function renderPropLineEditor() {
+  const el = document.getElementById('prop-line-editor'); if (!el) return;
+  const eligible = ALL_PLAYERS.filter(p => (PLAYER_TIER[p.name]??5) <= 4);
+  el.innerHTML = eligible.map(p=>{
+    const auto = pointsPropLineFormula(p.name, p.team);
+    const override = PROP_OVERRIDES[p.name];
+    return `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:7px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px;">
+      <div style="flex:1;">
+        <div style="font-size:.82rem;font-weight:600;">${p.name}</div>
+        <div style="font-size:.65rem;color:var(--muted);font-family:'Space Mono';">T${PLAYER_TIER[p.name]} · Auto: ${auto}</div>
+      </div>
+      <input type="number" step="0.5" min="0.5" placeholder="Auto"
+        value="${override !== undefined ? override : ''}"
+        id="po-${p.name.replace(/\s+/g,'_')}"
+        style="width:70px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--gold);padding:4px 6px;font-family:'Space Mono';font-size:.8rem;text-align:center;">
+    </div>`}).join('');
+}
+
+// Formula-only version (no override check) used for showing "auto" value in editor
+function pointsPropLineFormula(playerName, teamName) {
+  const tier = PLAYER_TIER[playerName] ?? 5;
+  if (tier >= 5) return null;
+  const tc = TEAM_TIER_COUNT[teamName] || {1:0,2:0,3:0,4:0,5:0};
+  const t1=tc[1]||0, t2=tc[2]||0, t3=tc[3]||0;
+  const above12=t1+t2, above123=t1+t2+t3;
+  if (tier===1){ const o=t1-1; if(o>=1) return 8.5; if(t2>=1) return 9.5; return 10.5; }
+  if (tier===2){ if(t1>=2) return 5.5; if(t1===1) return 6.5; return 7.5; }
+  if (tier===3){ if(above12>=2) return 3.5; if(above12===1) return 4.5; return 5.5; }
+  const raw=3.5-above123*0.5; return Math.max(1.5, raw%1===0?raw-0.5:raw);
+}
+
+async function savePropOverrides() {
+  const overrides = {};
+  ALL_PLAYERS.filter(p=>(PLAYER_TIER[p.name]??5)<=4).forEach(p=>{
+    const id = `po-${p.name.replace(/\s+/g,'_')}`;
+    const raw = document.getElementById(id)?.value;
+    if (raw !== '' && raw !== undefined && raw !== null) {
+      const val = parseFloat(raw);
+      if (!isNaN(val) && val > 0) overrides[p.name] = val;
+    }
+  });
+  PROP_OVERRIDES = overrides;
+  await dbSetConfig('prop_overrides', PROP_OVERRIDES);
+  renderProps();
+  showToast('✅ Prop line overrides saved!');
+}
+
+function renderAdminList() {
+  const el = document.getElementById('admin-list'); if (!el) return;
+  el.innerHTML = ADMIN_EMAILS.map(e=>`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:7px 12px;">
+      <span style="flex:1;font-family:'Space Mono';font-size:.72rem;">${e}</span>
+      ${e===ADMIN_EMAIL?'<span style="font-size:.65rem;color:var(--gold);">OWNER</span>':`<button onclick="removeAdmin('${e}')" style="background:none;border:1px solid var(--red);color:var(--red);border-radius:4px;padding:2px 8px;font-size:.65rem;cursor:pointer;">Remove</button>`}
+    </div>`).join('');
+}
+
+async function addAdmin() {
+  const inp = document.getElementById('new-admin-email');
+  const email = inp.value.trim().toLowerCase();
+  if (!email.includes('@')) { showToast('Enter a valid email.', true); return; }
+  if (ADMIN_EMAILS.includes(email)) { showToast('Already an admin.', true); return; }
+  ADMIN_EMAILS.push(email);
+  await dbSetConfig('admin_emails', ADMIN_EMAILS);
+  inp.value = '';
+  renderAdminList();
+  showToast(`✅ ${email} added as admin.`);
+}
+
+async function removeAdmin(email) {
+  if (email === ADMIN_EMAIL) { showToast("Can't remove the owner.", true); return; }
+  ADMIN_EMAILS = ADMIN_EMAILS.filter(e=>e!==email);
+  await dbSetConfig('admin_emails', ADMIN_EMAILS);
+  renderAdminList();
+  showToast(`Removed ${email}.`);
+}
+
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(`panel-${tab}`).classList.add('active');
+  if (el) el.classList.add('active');
+  if (tab==='friends') renderChallenges();
+  if (tab==='results') { populateResultsForm(); if(isAdmin(currentUser?.email)) { renderAdminPending(); renderPowerRankEditor(); renderPropLineEditor(); renderAdminList(); } }
+}
+function showToast(msg, err=false) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast'+(err?' err':'');
+  t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+// ══════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
+(async function init() {
+  renderGames(); renderProps(); renderStandings(); renderSchedule(); renderRosters();
+
+  const session = loadSession();
+  if (session && session.email) {
+    // Show a brief loading state while we verify with Supabase
+    document.getElementById('authModal').style.display = 'none';
+    document.getElementById('userName').textContent = session.name || '...';
+    try {
+      await loginSuccess(session.email);
+    } catch(e) {
+      // Session invalid or network error — show login
+      clearSession();
+      document.getElementById('authModal').style.display = 'flex';
+      showAuthView('signin');
+    }
+  } else {
+    document.getElementById('authModal').style.display = 'flex';
+    showAuthView('signin');
+  }
+
+  window.addEventListener('beforeunload', () => { persistUser(); });
+})();
+</script>
+
+</body>
+</html>
